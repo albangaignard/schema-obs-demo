@@ -1,6 +1,7 @@
 from dash import Dash, html, dcc, Input, Output, callback
 import plotly.express as px
 import json
+import glob 
 
 
 class Node:
@@ -29,6 +30,12 @@ def item_generator(json_input, lookup_key, depth=None):
         for item in json_input:
             yield from item_generator(item, lookup_key, depth)
 
+target_classes = []
+for file in glob.glob("assets/plots/*.svg"):
+    fname = file.split("assets/plots/")[1]
+    cname = fname.split("_plot.svg")[0]
+    target_classes.append(f"schema:{cname}")
+target_classes.sort()
 
 top_20_target_classes = [
     "schema:ListItem",
@@ -52,58 +59,6 @@ top_20_target_classes = [
     "schema:Rating",
     "schema:Place",
 ]
-
-
-data2 = dict(
-    character=["B", "C", "D", "E", "E", "G"],
-    parent=["A", "A", "B", "B", "G", "A"],
-    value=[12, 14, 14, 3000, 8, 1],
-)
-
-# test_data = {
-#     "@id": "A",
-#     "value": 29,
-#     "children": [
-#         {"@id": "B", "value": 2},
-#         {"@id": "C", "value": 5},
-#         {"@id": "F", "value": 5},
-#         {
-#             "@id": "D",
-#             "value": 5,
-#             "children": [
-#                 {"@id": "E", "value": 2},
-#                 {"@id": "F", "value": 2},
-#                 {"@id": "G", "value": 2},
-#             ],
-#         },
-#     ],
-# }
-# data_plotly_sunburst_test = {"ids": [], "names": [], "parents": [], "values": []}
-# itemlist = sorted(item_generator(test_data, "children"), key=lambda x: x[0])
-# nodelist = []
-# for generation, parent in itemlist:
-#     parent_node = Node(parent["@id"], generation, value=parent["value"])
-#     if parent_node not in nodelist:
-#         print(f"Adding {parent_node} to {nodelist}")
-#         nodelist.append(parent_node)
-
-#     if "children" in parent.keys():
-#         for child in parent.get("children"):
-#             child_node = Node(
-#                 child["@id"], generation, parent=parent["@id"], value=child["value"]
-#             )
-#             nodelist.append(child_node)
-
-# for node in nodelist:
-#     id = node._id
-#     if id in data_plotly_sunburst_test["ids"]:
-#         id = f"{node._id} {node._parent} {node._generation}"
-#     data_plotly_sunburst_test["ids"].append(id)
-#     data_plotly_sunburst_test["names"].append(node._id)
-#     data_plotly_sunburst_test["values"].append(node._value)
-#     data_plotly_sunburst_test["parents"].append(node._parent)
-
-# print(data_plotly_sunburst_test)
 
 data_plotly_sunburst = {"ids": [], "names": [], "parents": [], "values": []}
 with open("data/count.json", "r") as file:
@@ -138,13 +93,6 @@ with open("data/count.json", "r") as file:
         data_plotly_sunburst["names"].append(node._id)
         data_plotly_sunburst["values"].append(node._value)
         data_plotly_sunburst["parents"].append(node._parent)
-#     print(f"visited {i} types")
-#     print(f"visited {j} types with parents")
-#     print(data_plotly_sunburst)
-
-# for c in data_plotly_sunburst["parents"]:
-#     if c != "":
-#         assert c in data_plotly_sunburst["names"], f"{c} parent class cannot be found in classes"
 
 
 # Initialize the app
@@ -213,7 +161,7 @@ app.layout = html.Div(
                                 html.Div(
                                     [
                                         dcc.Dropdown(
-                                            top_20_target_classes,
+                                            target_classes,
                                             "schema:Product",
                                             id="class-dropdown",
                                         )
