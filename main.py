@@ -109,7 +109,7 @@ app.layout = html.Div(
                         html.Div(
                             [
                                 html.H1(
-                                    "Schema.org structured data observatory",
+                                    "Schema.org annotations observatory",
                                     className="title",
                                 ),
                                 html.H2(
@@ -132,7 +132,12 @@ app.layout = html.Div(
                         html.Div(
                             [
                                 html.Div(
-                                    children="Schema.org class hierarchy. The count of typed entities is displayed through the 'value' attribute.",
+                                    children="Schema.org class hierarchy.",
+                                    className="title is-5",
+                                    style={"padding": 10},
+                                ),
+                                html.Div(
+                                    children="In the following sunburst plot, the count of typed entities is displayed through the 'value' attribute.",
                                     className="content",
                                     style={"padding": 10},
                                 ),
@@ -160,6 +165,23 @@ app.layout = html.Div(
                             [
                                 html.Div(
                                     [
+                                        html.Div(
+                                            children="Per-class top-10 property combinations.",
+                                            className="title is-5",
+                                        ),
+                                        html.Div(
+                                            children="In the following upset plots, you can select a Schema.org class and display the most used property combinations (top-10).",
+                                            className="content",
+                                        ),
+                                        html.Div([
+                                            "All these 776 plots have been rendered based on the Schema.org characteristic sets we pre-computed and made available at ", 
+                                            dcc.Link(f"https://zenodo.org/record/8167689", href="https://zenodo.org/record/8167689", target="_blank"),
+                                            "."
+                                        ],
+                                            #children="All these 776 plots have been rendered based on the Schema.org characteristic sets we pre-computed (https://zenodo.org/record/8167689)",
+                                            className="content",
+                                            
+                                        ),
                                         dcc.Dropdown(
                                             target_classes,
                                             "schema:Product",
